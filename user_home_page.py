@@ -111,6 +111,54 @@ def user_home_page():
 
             # Display styled content
             st.markdown(profile_css + profile_html, unsafe_allow_html=True)
+    elif select == 'Predictions':
+        st.markdown(
+        """
+        <style>
+        /* Apply background image to the main content area */
+        .main {
+            background-image: url("https://www.unite.ai/wp-content/uploads/2024/07/Alex_Mc_Split-screen_image_on_one_side_a_human_eye_with_visib_31bfae24-931c-43e6-a918-b3af74cc2964_2.png");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-color: rgba(255, 255, 255, 0.6);
+            background-blend-mode: overlay;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True
+        )
+        st.markdown("<h1 style='text-align: center;'>Eye Disease Prediction</h1>", unsafe_allow_html=True)
+        image=st.file_uploader("Upload Eye Fundus Image",type=['jpg','png','jpeg'])
+        if image:
+            st.image(image,use_column_width=True)
+    elif select == 'Generate Report':
+        st.markdown(
+        """
+        <style>
+        /* Apply background image to the main content area */
+        .main {
+            background-image: url("https://png.pngtree.com/thumb_back/fw800/background/20240715/pngtree-d-close-up-of-a-human-eye-with-blue-iris-generative-image_16011220.jpg");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-color: rgba(255, 255, 255, 0.6);
+            background-blend-mode: overlay;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True
+        )
+        col1,col2,col3=st.columns([5,10,5])
+        col2.markdown(
+            """
+            <div style="text-align: center; padding: 1px; background-color: #f6fa87; border-radius: 70px; border: 2px solid black;">
+                <p style="color: red; font-size: 35px;"><b>Report Generation</b></p>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+
     elif select == 'Queries':
         st.markdown(
         """
