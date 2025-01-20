@@ -30,6 +30,8 @@ def login_page():
         # Email and Password inputs
         email = st.text_input("Email")
         password = st.text_input("Password", type="password")
+        #add forgot password link
+        st.markdown("[Forgot Password?](https://www.google.com)")
 
         # Submit button inside the form
         col1,col2,col3=st.columns([1,2,1])
