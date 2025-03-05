@@ -7,6 +7,6 @@ tensorflow==2.17.0
 torch
 torchvision
 seaborn==0.12.2
-pillow==11.1.0
+pillow
 pathlib==1.0.1
 utils==1.0.2
