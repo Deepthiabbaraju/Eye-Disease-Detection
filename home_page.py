@@ -32,13 +32,12 @@ def home_page():
         """
         <ul>
             <li>Normal (N)</li>
-            <li>Diabetes (D)</li>
-            <li>Glaucoma (G)</li>
             <li>Cataract (C)</li>
-            <li>Age related Macular Degeneration (A)</li>
-            <li>Hypertension (H)</li>
-            <li>Myopia (M)</li>
-            <li>Other diseases/abnormalities (O)</li>
+            <li>Glaucoma (G)</li>
+            <li>Non Eye Disease (O)</li>
+            <li> AMD (A)</li>
+            <li> Myopia (M)</li>
+
         </ul>
         """,
         unsafe_allow_html=True

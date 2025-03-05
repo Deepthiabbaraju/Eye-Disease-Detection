@@ -35,7 +35,8 @@ def signup_page():
         col1,col2=st.columns([1,1])
         eye_power=col1.number_input("Eye Power👓",0.0,100.0,0.0,0.5)
         eye_problems=col2.selectbox("Eye Problems👀",["Myopia","Hypermetropia","Astigmatism","Presbyopia","Others",'None'])
-
+        otp=None
+        disease='No'
         col1,col2=st.columns([1,1])
         password = col1.text_input("Create a Password", type="password", key="signup_password")
         retyped_password = col2.text_input("Retype Password", type="password", key="signup_retyped_password")
@@ -43,11 +44,11 @@ def signup_page():
         with col1:
             if st.form_submit_button("Sign Up🔏") and validate_mail(email)!=None and len(password)>=6 and password==retyped_password and age and gender and name:
                 try:
-                    add_user(name,email,age,gender,eye_power,eye_problems,password)
+                    add_user(name,email,age,gender,eye_power,eye_problems,otp,disease,password)
                     st.success("Account created successfully!!")
                     navigate_to_page("login")
                 except Exception as e:
-                    st.error('Already have an account with this email address. Please login.')
+                    st.error("Email already exists. Please login.")
             elif validate_mail(email)==None:
                 st.error("Invalid email address. Please enter a valid email address.")
             elif password!=retyped_password:
