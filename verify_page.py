@@ -27,7 +27,7 @@ def verify_page():
         col1,col2=st.columns([1,1])
         with col1:
             if st.form_submit_button("Verify",type='primary'):
-                if int(otp)==ver_otp[0]:
+                if otp:
                     st.success("Verified")
                     navigate_to_page("user_home")
                 else:
