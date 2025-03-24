@@ -53,7 +53,6 @@ def login_page():
         # Email and Password inputs
         email = st.text_input("Email")
         password = st.text_input("Password", type="password")
-
         #add forgot password link
 
         # Submit button inside the form
@@ -66,11 +65,10 @@ def login_page():
                     to_email=email
                     subject = "OTP for login for Eye Care"
                     body = f"Hello,\n\nYour OTP for login is {otp}.\n\nThanks,\nEye Care Team"
-                    from_email = 'dont.reply.mail.mail@gmail.com'
-                    from_password = 'ekdbgizfyaiycmkv'  
+                    from_email = 'deepthiabbaraju02@gmail.com'
+                    from_password = 'kphfxyllpxxwbcst'  
                     send_alert_email(to_email, subject, body, from_email, from_password)
                     add_otp(email,otp)
-
                     st.success(f"Login successful.")
                     st.session_state["logged_in"] = True
                     st.session_state["current_user"] = email
@@ -78,5 +76,5 @@ def login_page():
                 else:
                     st.error("Invalid email or password.")
         with col3:
-            if st.form_submit_button("Create account👤"):
-                navigate_to_page("signup")
+            if st.form_submit_button("Forgot Password?"):
+                navigate_to_page("forgot_password")

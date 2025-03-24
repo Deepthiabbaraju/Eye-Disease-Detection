@@ -3,7 +3,7 @@ from home_page import home_page
 from login_page import login_page
 from signup_page import signup_page
 from user_home_page import user_home_page
-from forgot_page import forgot_page
+from forgot_page import forgot_password_page
 from verify_page import verify_page
 # Initialize session state
 if "current_page" not in st.session_state:
@@ -22,8 +22,11 @@ elif st.session_state["current_page"] == "signup":
     signup_page()
 elif st.session_state["current_page"] == "user_home" and st.session_state["logged_in"]:
     user_home_page()
+elif st.session_state["current_page"] == "forgot_password":
+    forgot_password_page()
+
 elif st.session_state['current_page'] == "forgot":
-    forgot_page()
+    forgot_password_page()
 elif st.session_state["current_page"] == "verify":
     verify_page()
 else:

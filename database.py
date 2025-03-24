@@ -62,3 +62,27 @@ def fetch_otp(email):
     otp = c.fetchone()
     conn.close()
     return otp
+
+def fetch_password(email):
+    conn = sqlite3.connect("users.db")
+    c = conn.cursor()
+    c.execute("SELECT password FROM users WHERE email = ?", (email,))
+    password = c.fetchone()
+    conn.close()
+    return password
+
+def valid_user(email):
+    conn = sqlite3.connect("users.db")
+    c = conn.cursor()
+    c.execute("SELECT * FROM users WHERE email = ?", (email,))
+    user = c.fetchone()
+    conn.close()
+    return user
+
+def update_password(email,password):
+    conn = sqlite3.connect("users.db")
+    c = conn.cursor()
+    c.execute("UPDATE users SET password = ? WHERE email = ?", (password,email))
+    conn.commit()
+    conn.close()
+

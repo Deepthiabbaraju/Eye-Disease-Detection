@@ -5,6 +5,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 import torch
+import google.generativeai as genai
 import numpy as np
 from PIL import Image
 from pathlib import Path
@@ -13,6 +14,28 @@ from utils import *
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 MODEL_SAVE_PATH = "models/MultipleEyeDiseaseDetectModel.pth"
 model_info = torch.load(MODEL_SAVE_PATH, map_location=torch.device('cpu'))
+import requests
+YOUTUBE_API_KEY = "AIzaSyDYEeSTrT7pPpVzpmaJ491gxogVxfWwpvM"
+
+def fetch_youtube_videos(query, max_results=10):
+    url = f"https://www.googleapis.com/youtube/v3/search"
+    params = {
+        'part': 'snippet',
+        'q': query,
+        'type': 'video',
+        'key': YOUTUBE_API_KEY,
+        'maxResults': max_results
+    }
+    response = requests.get(url, params=params)
+    videos = []
+    if response.status_code == 200:
+        data = response.json()
+        for item in data['items']:
+            video_id = item['id']['videoId']
+            video_title = item['snippet']['title']
+            videos.append({'video_id': video_id, 'title': video_title})
+    return videos
+
 
 # Instantiate Model
 model = ImprovedTinyVGGModel(
@@ -71,8 +94,8 @@ def user_home_page():
         st.image('https://static.vecteezy.com/system/resources/previews/026/773/363/non_2x/eye-with-ai-generated-free-png.png', use_column_width=True)
         select = option_menu(
             "",
-            ["Patient Profile",'Predictions', 'Generate Report',"Queries","Logout"],
-            icons=['person-square','eye-fill','file-earmark-fill','question-circle-fill' ,'lock-fill'],
+            ["Patient Profile",'Predictions', 'Generate Report',"Queries","ChatBot","Lifestyle","Logout"],
+            icons=['person-square','eye-fill','file-earmark-fill','question-circle-fill' ,'robot','egg-fried','lock-fill'],
             menu_icon="cast",
             default_index=0,
             orientation="vertical",
@@ -353,7 +376,7 @@ def user_home_page():
 
             st.markdown('</div>', unsafe_allow_html=True)
         except:
-            st.error("No Disease Detected Yet")
+            st.image('https://cdni.iconscout.com/illustration/premium/thumb/no-data-found-illustration-download-in-svg-png-gif-file-formats--office-computer-digital-work-business-pack-illustrations-7265556.png',use_column_width=True,caption='No Disease Detected Yet')
     elif select == 'Queries':
         st.markdown(
         """
@@ -383,11 +406,11 @@ def user_home_page():
                     to_email=email
                     subject = "Feedback Received"
                     body = f"Hello {name},\n\nThank you for reaching out to us. We have received your query and will get back to you soon.\n\nRegards,\nTeam Blindspot"
-                    from_email = 'dont.reply.mail.mail@gmail.com'
-                    from_password = 'ekdbgizfyaiycmkv'  
+                    from_email = 'deepthiabbaraju02@gmail.com'
+                    from_password = 'kphfxyllpxxwbcst'  
                     send_alert_email(to_email, subject, body, from_email, from_password)
                     BODY1=f"Hello,\n\n{name} has a query.\n\nQuery: {issue}\n\nThanks,\nEye Care Team"
-                    send_alert_email('dont.reply.mail.mail@gmail.com', 'Query Received', BODY1, from_email, from_password)
+                    send_alert_email('deepthiabbaraju02@gmail.com', 'Query Received', BODY1, from_email, from_password)
                     st.success("Thank you for reaching out! We'll get back to you soon.")
                 else:
                     st.error("Please fill in all fields before submitting.")
@@ -395,4 +418,103 @@ def user_home_page():
     elif select == 'Logout':
         st.session_state["logged_in"] = False
         st.session_state["current_user"] = None
+        #clear chat history
+        st.session_state["messages"] = []
         navigate_to_page("home")
+    elif select=='ChatBot':
+        # Configure API Key
+        api_key = "AIzaSyCEHqEUnURAuH54Tng8IjlWSR6LyzzEpCI"
+        genai.configure(api_key=api_key)
+
+        # Initialize the model
+        model1 = genai.GenerativeModel(model_name="gemini-1.5-flash-latest")
+
+        st.title("Eye Disease Chatbot 🤖")
+        st.markdown("Ask me anything about eye diseases...")
+
+        # Initialize session state for chat history
+        if "messages" not in st.session_state:
+            st.session_state.messages = []
+
+        # Display chat history
+        for message in st.session_state.messages:
+            with st.chat_message(message["role"]):
+                st.markdown(message["content"])
+
+        # User Input
+        user_input = st.chat_input("Ask me anything about the eye...")
+
+        if user_input:
+            # Append user message to session and display it
+            st.session_state.messages.append({"role": "user", "content": user_input})
+            with st.chat_message("user"):
+                st.markdown(user_input)
+
+            # Handle general greetings separately
+            greetings = ["hi", "hello", "hey", "gm", "good morning", "good evening", "good night"]
+            if user_input.lower() in greetings:
+                bot_response = "Hello! How can I assist you with eye-related queries? 😊"
+            
+            else:
+                # Check if the input is related to the eye
+                check_prompt = f"Is the following question related to the Eye? Answer only 'yes' or 'no'. Question: {user_input}"
+                check_response = model1.generate_content([check_prompt]).text.strip().lower()
+
+                if check_response == "yes":
+                    # Generate response from Gemini API
+                    bot_prompt = f"Answer the following question in detail: {user_input}"
+                    response = model1.generate_content([bot_prompt])
+                    bot_response = response.text
+                else:
+                    bot_response = "Please ask a relevant question about the eye."
+
+            # Append bot response to session and display it
+            st.session_state.messages.append({"role": "bot", "content": bot_response})
+            with st.chat_message("bot"):
+                st.markdown(bot_response)
+    elif select=='Lifestyle':
+        st.markdown(
+        """
+        <style>
+        /* Apply background image to the main content area */
+        .main {
+            background-image: url("https://st2.depositphotos.com/2079965/11454/i/450/depositphotos_114546022-stock-photo-smoothies-with-fruit-ingredients.jpg");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-color: rgba(255, 255, 255, 0.6);
+            background-blend-mode: overlay;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True
+        )
+        user=fetch_user(st.session_state["current_user"])
+        try:
+            st.markdown('<h1 style="text-align: center; color: red;">Lifestyle Recommendations</h1>', unsafe_allow_html=True)
+            name = user[1]
+            age = user[3]
+            gender = user[4]
+            disease = user[8]
+            if disease=='No' or disease=='Non-eye':
+                st.image('https://cdni.iconscout.com/illustration/premium/thumb/no-data-found-illustration-download-in-svg-png-gif-file-formats--office-computer-digital-work-business-pack-illustrations-7265556.png',use_column_width=True,caption='No Disease Detected Yet')
+            elif disease=='Normal':
+                query='eye caring techniques'
+                videos = fetch_youtube_videos(query)
+                for i in range(0, len(videos), 2):
+                    cols = st.columns(2)
+                    for j, video in enumerate(videos[i:i+2]):
+                        with cols[j]:
+                            st.video(f"https://www.youtube.com/watch?v={video['video_id']}")
+            else:
+                query = f"{disease} eye diet"
+                videos = fetch_youtube_videos(query)
+                for i in range(0, len(videos), 2):
+                    cols = st.columns(2)  # Create 3 columns
+                    for j, video in enumerate(videos[i:i+2]):  # Iterate over videos for the current row
+                        with cols[j]:
+                            st.video(f"https://www.youtube.com/watch?v={video['video_id']}")
+        except:
+            st.image('https://cdni.iconscout.com/illustration/premium/thumb/no-data-found-illustration-download-in-svg-png-gif-file-formats--office-computer-digital-work-business-pack-illustrations-7265556.png',use_column_width=True,caption='No Disease Detected Yet')
+
+
