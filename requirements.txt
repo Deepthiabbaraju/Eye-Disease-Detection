@@ -10,3 +10,4 @@ seaborn==0.12.2
 pillow
 pathlib==1.0.1
 utils==1.0.2
+google-generativeai== 0.8.3
